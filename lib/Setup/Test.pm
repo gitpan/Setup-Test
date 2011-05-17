@@ -1,6 +1,6 @@
 package Setup::Test;
 BEGIN {
-  $Setup::Test::VERSION = '0.01';
+  $Setup::Test::VERSION = '0.02';
 }
 # ABSTRACT: Various simple setup routines for testing
 
@@ -79,7 +79,7 @@ sub setup_text_case {
             my $correct;
             if ($step->[1] eq 'upper') {
                 $correct = uc($$text_ref);
-            } elsif ($step->[1] eq 'title') {
+            } elsif ($step->[1] eq 'lower') {
                 $correct = lc($$text_ref);
             } elsif ($step->[1] eq 'title') {
                 ($correct = $$text_ref) =~ s/\b(\w)(\w*)\b/uc($1).lc($2)/eg;
@@ -133,7 +133,7 @@ Setup::Test - Various simple setup routines for testing
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 

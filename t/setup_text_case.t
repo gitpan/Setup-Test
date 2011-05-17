@@ -16,6 +16,7 @@ setup();
 
 my $text        = "lower UPPER Title OtHer";
 my $orig_text   = $text;
+my $t_text      = "Lower Upper Title Other";
 my $text_u      = "UPPER";
 my $orig_text_u = $text_u;
 
@@ -76,8 +77,22 @@ test_setup_text_case(
     text       => uc($orig_text),
 );
 
-# XXX: test case: lower
-# XXX: test case: title
+test_setup_text_case(
+    name       => "lower",
+    args       => {text_ref=>\$text, case=>'lower'},
+    status     => 200,
+    text       => lc($orig_text),
+);
+
+test_setup_text_case(
+    name       => "title",
+    args       => {text_ref=>\$text, case=>'title'},
+    status     => 200,
+    text       => $t_text,
+);
+
+# XXX: more complete test case: lower
+# XXX: more complete test case: title
 
 DONE_TESTING:
 teardown();
