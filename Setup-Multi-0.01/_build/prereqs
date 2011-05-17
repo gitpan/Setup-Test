@@ -1,0 +1,13 @@
+do{ my $x = {
+       'build_requires' => {
+                             'Module::Build' => '0.3601'
+                           },
+       'conflicts' => {},
+       'requires' => {
+                       'perl' => '5.010000',
+                       'Sub::Spec' => '0.13',
+                       'Setup::Test' => '0'
+                     },
+       'recommends' => {}
+     };
+$x; }
