@@ -1,6 +1,6 @@
 package Setup::Test;
 BEGIN {
-  $Setup::Test::VERSION = '0.02';
+  $Setup::Test::VERSION = '0.03';
 }
 # ABSTRACT: Various simple setup routines for testing
 
@@ -85,7 +85,7 @@ sub setup_text_case {
                 ($correct = $$text_ref) =~ s/\b(\w)(\w*)\b/uc($1).lc($2)/eg;
             }
             if ($correct ne $$text_ref) {
-                $log->tracef("nok: text case needs correcting");
+                $log->infof("nok: text case needs correcting");
                 return [200, "Dry run"] if $dry_run;
                 $changed++;
                 unshift @$undo_steps, ["set", $$text_ref];
@@ -133,7 +133,7 @@ Setup::Test - Various simple setup routines for testing
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
