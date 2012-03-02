@@ -1,5 +1,10 @@
 Revision history for Setup-Test
 
+0.04    2012-03-02
+
+        No functional changes. Replace Sub::Spec with Rinci.
+
+
 0.03    2011-05-18
 
         No functional changes. Changed logging levels.

@@ -1,8 +1,4 @@
 package Setup::Test;
-BEGIN {
-  $Setup::Test::VERSION = '0.03';
-}
-# ABSTRACT: Various simple setup routines for testing
 
 use 5.010;
 use strict;
@@ -12,6 +8,8 @@ use Log::Any '$log';
 require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(setup_text_case);
+
+our $VERSION = '0.04'; # VERSION
 
 our %SPEC;
 
@@ -123,8 +121,10 @@ sub setup_text_case {
     return [$changed? 200 : 304, $changed? "OK" : "Nothing done", $data, $meta];
 }
 1;
+# ABSTRACT: Various simple setup routines for testing
 
 
+__END__
 =pod
 
 =head1 NAME
@@ -133,7 +133,7 @@ Setup::Test - Various simple setup routines for testing
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
@@ -161,7 +161,7 @@ This module is part of the Setup modules family.
 
 This module uses L<Log::Any> logging framework.
 
-This module's functions have L<Sub::Spec> specs.
+This module has L<Rinci> metadata.
 
 =head1 THE SETUP MODULES FAMILY
 
@@ -222,13 +222,10 @@ Steven Haryanto <stevenharyanto@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Steven Haryanto.
+This software is copyright (c) 2012 by Steven Haryanto.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
 
