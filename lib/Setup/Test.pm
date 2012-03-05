@@ -9,7 +9,7 @@ require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(setup_text_case);
 
-our $VERSION = '0.04'; # VERSION
+our $VERSION = '0.05'; # VERSION
 
 our %SPEC;
 
@@ -133,7 +133,7 @@ Setup::Test - Various simple setup routines for testing
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 
@@ -172,45 +172,6 @@ modules family.
 =head1 FUNCTIONS
 
 None are exported by default, but they are exportable.
-
-=head2 setup_text_case(%args) -> [STATUS_CODE, ERR_MSG, RESULT]
-
-
-Change text case.
-
-On do, will change text case to UPPER/lower/Title Case. Will save the original
-text for undo.
-
-On undo, will restore the original text.
-
-Returns a 3-element arrayref. STATUS_CODE is 200 on success, or an error code
-between 3xx-5xx (just like in HTTP). ERR_MSG is a string containing error
-message, RESULT is the actual result.
-
-This function supports undo operation. See L<Sub::Spec::Clause::features> for
-details on how to perform do/undo/redo.
-
-This function supports dry-run (simulation) mode. To run in dry-run mode, add
-argument C<-dry_run> => 1.
-
-Arguments (C<*> denotes required arguments):
-
-=over 4
-
-=item * B<case>* => I<str>
-
-Value must be one of:
-
- ["upper", "lower", "title"]
-
-
-Case style.
-
-=item * B<text_ref>* => I<str>
-
-Reference to text.
-
-=back
 
 =head1 SEE ALSO
 

@@ -17,12 +17,13 @@ my %module_build_args = (
     "Steven Haryanto <stevenharyanto\@gmail.com>"
   ],
   "dist_name" => "Setup-Test",
-  "dist_version" => "0.04",
+  "dist_version" => "0.05",
   "license" => "perl",
   "module_name" => "Setup::Test",
   "recommends" => {},
   "recursive_test_files" => 1,
   "requires" => {
+    "Log::Any" => 0,
     "Rinci" => "1.1.0",
     "Test::More" => "0.96",
     "perl" => "5.010000"

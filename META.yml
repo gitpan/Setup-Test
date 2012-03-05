@@ -14,10 +14,11 @@ meta-spec:
   version: 1.4
 name: Setup-Test
 requires:
+  Log::Any: 0
   Rinci: 1.1.0
   Test::More: 0.96
   perl: 5.010000
 resources:
   homepage: http://search.cpan.org/dist/Setup-Test/
   repository: http://github.com/sharyanto/perl-Setup-Test
-version: 0.04
+version: 0.05

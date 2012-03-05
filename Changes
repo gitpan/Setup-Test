@@ -1,5 +1,10 @@
 Revision history for Setup-Test
 
+0.05    2012-03-06
+
+        No functional changes. Add missing dependency to Log::Any [CT].
+
+
 0.04    2012-03-02
 
         No functional changes. Replace Sub::Spec with Rinci.

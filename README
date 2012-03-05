@@ -2,7 +2,7 @@ NAME
     Setup::Test - Various simple setup routines for testing
 
 VERSION
-    version 0.04
+    version 0.05
 
 SYNOPSIS
      use Setup::Unix::Group 'setup_text_case';
@@ -38,38 +38,6 @@ THE SETUP MODULES FAMILY
 
 FUNCTIONS
     None are exported by default, but they are exportable.
-
-  setup_text_case(%args) -> [STATUS_CODE, ERR_MSG, RESULT]
-    Change text case.
-
-    On do, will change text case to UPPER/lower/Title Case. Will save the
-    original text for undo.
-
-    On undo, will restore the original text.
-
-    Returns a 3-element arrayref. STATUS_CODE is 200 on success, or an error
-    code between 3xx-5xx (just like in HTTP). ERR_MSG is a string containing
-    error message, RESULT is the actual result.
-
-    This function supports undo operation. See Sub::Spec::Clause::features
-    for details on how to perform do/undo/redo.
-
-    This function supports dry-run (simulation) mode. To run in dry-run
-    mode, add argument "-dry_run" => 1.
-
-    Arguments ("*" denotes required arguments):
-
-    *   case* => *str*
-
-        Value must be one of:
-
-         ["upper", "lower", "title"]
-
-        Case style.
-
-    *   text_ref* => *str*
-
-        Reference to text.
 
 SEE ALSO
     Other modules in Setup:: namespace.
