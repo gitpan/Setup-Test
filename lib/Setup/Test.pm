@@ -9,7 +9,7 @@ require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(setup_text_case);
 
-our $VERSION = '0.05'; # VERSION
+our $VERSION = '0.06'; # VERSION
 
 our %SPEC;
 
@@ -120,6 +120,7 @@ sub setup_text_case {
     $log->tracef("meta: %s", $meta);
     return [$changed? 200 : 304, $changed? "OK" : "Nothing done", $data, $meta];
 }
+
 1;
 # ABSTRACT: Various simple setup routines for testing
 
@@ -133,7 +134,7 @@ Setup::Test - Various simple setup routines for testing
 
 =head1 VERSION
 
-version 0.05
+version 0.06
 
 =head1 SYNOPSIS
 
@@ -168,10 +169,6 @@ This module has L<Rinci> metadata.
 I use the C<Setup::> namespace for the Setup modules family. See L<Setup::File>
 for more details on the goals, characteristics, and implementation of Setup
 modules family.
-
-=head1 FUNCTIONS
-
-None are exported by default, but they are exportable.
 
 =head1 SEE ALSO
 

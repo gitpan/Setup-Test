@@ -7,6 +7,7 @@ use warnings;
 #use File::Temp qw(tempdir);
 use Setup::Test qw(setup_text_case);
 use Test::More 0.96;
+use Test::Setup qw(test_setup);
 
 sub setup {
     #$::tmp_dir = tempdir(CLEANUP => 1);
@@ -26,35 +27,39 @@ sub teardown {
 }
 
 sub test_setup_text_case {
-    my %args = @_;
-    subtest "$args{name}" => sub {
+    my %tstargs = @_;
 
-        my %setup_args = %{ $args{args} };
-        my $res;
-        eval {
-            $res = setup_text_case(%setup_args);
-        };
-        my $eval_err = $@;
+    my %tsargs = ();
 
-        if ($args{dies}) {
-            ok($eval_err, "dies");
-        } else {
-            ok(!$eval_err, "doesn't die") or diag $eval_err;
-        }
+    for (qw/name arg_error set_state1 set_state2 prepare cleanup/) {
+        $tsargs{$_} = $tstargs{$_};
+    }
+    $tsargs{function} = \&setup_text_case;
 
-        #diag explain $res;
-        if ($args{status}) {
-            is($res->[0], $args{status}, "status $args{status}")
-                or diag explain($res);
-        }
-        if (defined $args{text}) {
-            is(${$setup_args{text_ref}}, $args{text}, "text")
-                or diag explain($res);
-        }
-        if ($args{posttest}) {
-            $args{posttest}->($res);
+
+    my %fargs = (%{$tstargs{args} // {}},
+             );
+    $tsargs{args} = \%fargs;
+
+    my $check = sub {
+        my %cargs = @_;
+
+        if (defined $cargs{text}) {
+            is(${$fargs{text_ref}}, $cargs{text}, "text")
+                or diag explain(${$fargs{text_ref}});
         }
     };
+
+    $tsargs{check_setup}   = sub { $check->(%{$tstargs{check_setup}}) };
+    $tsargs{check_unsetup} = sub { $check->(%{$tstargs{check_unsetup}}) };
+    if ($tstargs{check_state1}) {
+        $tsargs{check_state1} = sub { $check->(%{$tstargs{check_state1}}) };
+    }
+    if ($tstargs{check_state2}) {
+        $tsargs{check_state2} = sub { $check->(%{$tstargs{check_state2}}) };
+    }
+
+    test_setup(%tsargs);
 }
 
 1;
