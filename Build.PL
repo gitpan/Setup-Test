@@ -17,7 +17,7 @@ my %module_build_args = (
     "Steven Haryanto <stevenharyanto\@gmail.com>"
   ],
   "dist_name" => "Setup-Test",
-  "dist_version" => "0.06",
+  "dist_version" => "0.07",
   "license" => "perl",
   "module_name" => "Setup::Test",
   "recommends" => {},
@@ -25,8 +25,9 @@ my %module_build_args = (
   "requires" => {
     "Log::Any" => 0,
     "Rinci" => "1.1.0",
+    "Setup" => "1.0.0",
     "Test::More" => "0.96",
-    "Test::Setup" => "0.13",
+    "Test::Setup" => "1.01",
     "perl" => "5.010000"
   },
   "script_files" => []

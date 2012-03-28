@@ -31,7 +31,7 @@ sub test_setup_text_case {
 
     my %tsargs = ();
 
-    for (qw/name arg_error set_state1 set_state2 prepare cleanup/) {
+    for (qw/name dry_do_error do_error set_state1 set_state2 prepare cleanup/) {
         $tsargs{$_} = $tstargs{$_};
     }
     $tsargs{function} = \&setup_text_case;

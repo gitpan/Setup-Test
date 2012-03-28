@@ -9,7 +9,7 @@ require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(setup_text_case);
 
-our $VERSION = '0.06'; # VERSION
+our $VERSION = '0.07'; # VERSION
 
 our %SPEC;
 
@@ -134,7 +134,7 @@ Setup::Test - Various simple setup routines for testing
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 
@@ -158,21 +158,13 @@ version 0.06
 
 This module provides simple setup functions, useful for testing purposes.
 
-This module is part of the Setup modules family.
-
 This module uses L<Log::Any> logging framework.
 
 This module has L<Rinci> metadata.
 
-=head1 THE SETUP MODULES FAMILY
-
-I use the C<Setup::> namespace for the Setup modules family. See L<Setup::File>
-for more details on the goals, characteristics, and implementation of Setup
-modules family.
-
 =head1 SEE ALSO
 
-Other modules in Setup:: namespace.
+L<Setup>
 
 =head1 AUTHOR
 

@@ -1,5 +1,10 @@
 Revision history for Setup-Test
 
+0.07    2012-03-28
+
+        No functional changes. Use newer Test::Setup.
+
+
 0.06    2012-03-28
 
         No functional changes. Use Test::Setup.

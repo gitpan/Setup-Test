@@ -2,7 +2,7 @@ NAME
     Setup::Test - Various simple setup routines for testing
 
 VERSION
-    version 0.06
+    version 0.07
 
 SYNOPSIS
      use Setup::Unix::Group 'setup_text_case';
@@ -25,19 +25,12 @@ DESCRIPTION
     This module provides simple setup functions, useful for testing
     purposes.
 
-    This module is part of the Setup modules family.
-
     This module uses Log::Any logging framework.
 
     This module has Rinci metadata.
 
-THE SETUP MODULES FAMILY
-    I use the "Setup::" namespace for the Setup modules family. See
-    Setup::File for more details on the goals, characteristics, and
-    implementation of Setup modules family.
-
 SEE ALSO
-    Other modules in Setup:: namespace.
+    Setup
 
 AUTHOR
     Steven Haryanto <stevenharyanto@gmail.com>
