@@ -5,15 +5,34 @@ use strict;
 use warnings;
 use Log::Any '$log';
 
+use Perinci::Sub::Gen::Undoable 0.06 qw(gen_undoable_func);
+
 require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(setup_text_case);
 
-our $VERSION = '0.07'; # VERSION
+our $VERSION = '0.08'; # VERSION
 
 our %SPEC;
 
-$SPEC{setup_text_case} = {
+# return undef if text in $tr is already in correct case, or return the text in
+# correct case.
+my $_test = sub {
+    my ($tr, $case) = @_;
+    my $correct;
+    if ($case eq 'upper') {
+        $correct = uc($$tr);
+    } elsif ($case eq 'lower') {
+        $correct = lc($$tr);
+    } elsif ($case eq 'title') {
+        ($correct = $$tr) =~ s/\b(\w)(\w*)\b/uc($1).lc($2)/eg;
+    }
+    return if $$tr eq $correct;
+    $correct;
+};
+
+my $res = gen_undoable_func(
+    name     => __PACKAGE__ . '::setup_text_case',
     summary  => "Change text case",
     description => <<'_',
 
@@ -22,104 +41,87 @@ text for undo.
 
 On undo, will restore the original text.
 
+This function does not support transaction because it uses scalar references
+which is not serializable to JSON (format used by transaction manager).
+
 _
+    tx   => {use=>0},
     args => {
-        text_ref => ['str*' => { # XXX actually ref to str, not str
+        text_ref => {
+            schema  => 'str*', # XXX actually ref to str, not str
             summary => 'Reference to text',
-        }],
-        case => ['str*' => {
+        },
+        case => {
+            schema  => ['str*' => {in=>[qw/upper lower title/]}],
             summary => 'Case style',
-            in => [qw/upper lower title/],
-        }],
+        },
     },
-    features => {undo=>1, dry_run=>1},
-};
-sub setup_text_case {
-    my %args           = @_;
-    my $dry_run        = $args{-dry_run};
-    my $undo_action    = $args{-undo_action} // "";
 
-    # check args
-    my $text_ref       = $args{text_ref};
-    defined($text_ref) or return [400, "Please specify text_ref"];
-    ref($text_ref) eq 'SCALAR'
-        or return [400, "Invalid text_ref: must be ref to a scalar"];
-    my $case           = $args{case};
-    $case or return [400, "Please specify case"];
-    $case =~ /\A(upper|lower|title)\z/
-        or return [400, "Invalid case: must be upper/lower/title"];
+    hook_check_args => sub {
+        my $args = shift;
+        defined($args->{text_ref}) or return [400, "Please specify text_ref"];
+        ref($args->{text_ref}) eq 'SCALAR'
+            or return [400, "Invalid text_ref: must be ref to a scalar"];
+        $args->{case} or return [400, "Please specify case"];
+        $args->{case} =~ /\A(upper|lower|title)\z/
+            or return [400, "Invalid case: must be upper/lower/title"];
+        [200, "OK"];
+    },
 
-    # collect steps
-    my $steps;
-    if ($undo_action eq 'undo') {
-        $steps = $args{-undo_data} or return [400, "Please supply -undo_data"];
-    } else {
-        $steps = [["case", $case]];
+    build_steps => sub {
+        my $args = shift;
+
+        my $tr    = $args->{text_ref};
+        my $case  = $args->{case};
+
+        my @steps;
+
+        my $res = $_test->($tr, $case);
+        push @steps, [case => $case] if defined($res);
+
+        [200, "OK", \@steps];
+    },
+
+    steps => {
+        case => {
+            summary => 'Change text case',
+            gen_undo => sub {
+                my ($args, $step) = @_;
+
+                my $tr  = $args->{text_ref};
+                my $res = $_test->($tr, $step->[1]);
+                return ["set", $$tr] if defined($res);
+                return;
+            },
+            run => sub {
+                my ($args, $step, $undo) = @_;
+
+                my $tr  = $args->{text_ref};
+                my $res = $_test->($tr, $step->[1]);
+                $$tr = $res if defined($res);
+                [200, "OK"];
+            },
+        },
+
+        set => {
+            summary => 'Set (restore) text value',
+            gen_undo => sub {
+                my ($args, $step) = @_;
+                ["case", $args->{case}];
+            },
+            run => sub {
+                my ($args, $step, $undo) = @_;
+
+                my $tr = $args->{text_ref};
+                $$tr = $step->[1];
+                [200, "OK"];
+            },
+        },
     }
+);
 
-    return [400, "Invalid steps, must be an array"]
-        unless $steps && ref($steps) eq 'ARRAY';
-
-    my $save_undo = $undo_action ? 1:0;
-
-    # perform the steps
-    my $rollback;
-    my $undo_steps = [];
-    my $changed;
-  STEP:
-    for my $i (0..@$steps-1) {
-        my $step = $steps->[$i];
-        $log->tracef("step %d of 0..%d: %s", $i, @$steps-1, $step);
-        my $err;
-        return [400, "Invalid step (not array)"] unless ref($step) eq 'ARRAY';
-
-        if ($step->[0] eq 'case') {
-            my $correct;
-            if ($step->[1] eq 'upper') {
-                $correct = uc($$text_ref);
-            } elsif ($step->[1] eq 'lower') {
-                $correct = lc($$text_ref);
-            } elsif ($step->[1] eq 'title') {
-                ($correct = $$text_ref) =~ s/\b(\w)(\w*)\b/uc($1).lc($2)/eg;
-            }
-            if ($correct ne $$text_ref) {
-                $log->infof("nok: text case needs correcting");
-                return [200, "Dry run"] if $dry_run;
-                $changed++;
-                unshift @$undo_steps, ["set", $$text_ref];
-                $$text_ref = $correct;
-                last;
-            }
-        } elsif ($step->[0] eq 'set') {
-            return [200, "Dry run"] if $dry_run;
-            $changed++;
-            unshift @$undo_steps, ["case", $case];
-            $$text_ref = $step->[1];
-            last;
-        } else {
-            die "BUG: Unknown step command: $step->[0]";
-        }
-      CHECK_ERR:
-        if ($err) {
-            if ($rollback) {
-                die "Failed rollback step $i of 0..".(@$steps-1).": $err";
-            } else {
-                $log->tracef("Step failed: $err, performing rollback (%s)...",
-                             $undo_steps);
-                $rollback = $err;
-                $steps = $undo_steps;
-                goto STEP; # perform steps all over again
-            }
-        }
-    }
-    return [500, "Error (rollbacked): $rollback"] if $rollback;
-
-    my $data = undef;
-    my $meta = {};
-    $meta->{undo_data} = $undo_steps if $save_undo;
-    $log->tracef("meta: %s", $meta);
-    return [$changed? 200 : 304, $changed? "OK" : "Nothing done", $data, $meta];
-}
+die "Can't generate function: $res->[0] - $res->[1]" unless $res->[0] == 200;
+$SPEC{setup_text_case} = $res->[2]{meta};
 
 1;
 # ABSTRACT: Various simple setup routines for testing
@@ -134,7 +136,7 @@ Setup::Test - Various simple setup routines for testing
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 

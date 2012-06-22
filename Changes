@@ -1,37 +1,42 @@
 Revision history for Setup-Test
 
-0.07    2012-03-28
+0.08    2012-06-22 (SHARYANTO)
+
+        No functional changes. Now uses Perinci::Sub::Gen::Undoable.
+
+
+0.07    2012-03-28 (SHARYANTO)
 
         No functional changes. Use newer Test::Setup.
 
 
-0.06    2012-03-28
+0.06    2012-03-28 (SHARYANTO)
 
         No functional changes. Use Test::Setup.
 
 
-0.05    2012-03-06
+0.05    2012-03-06 (SHARYANTO)
 
         No functional changes. Add missing dependency to Log::Any [CT].
 
 
-0.04    2012-03-02
+0.04    2012-03-02 (SHARYANTO)
 
         No functional changes. Replace Sub::Spec with Rinci.
 
 
-0.03    2011-05-18
+0.03    2011-05-18 (SHARYANTO)
 
         No functional changes. Changed logging levels.
 
 
-0.02    2011-05-17
+0.02    2011-05-17 (SHARYANTO)
 
         [BUG FIXES]
 
         - Fixed typo in code.
 
 
-0.01    2011-05-17
+0.01    2011-05-17 (SHARYANTO)
 
         - First release.
