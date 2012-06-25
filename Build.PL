@@ -19,16 +19,16 @@ my %module_build_args = (
     "Steven Haryanto <stevenharyanto\@gmail.com>"
   ],
   "dist_name" => "Setup-Test",
-  "dist_version" => "0.08",
+  "dist_version" => "0.09",
   "license" => "perl",
   "module_name" => "Setup::Test",
   "recommends" => {},
   "recursive_test_files" => 1,
   "requires" => {
     "Log::Any" => 0,
-    "Perinci::Sub::Gen::Undoable" => "0.06",
-    "Rinci" => "1.1.0",
-    "Setup" => "1.0.0",
+    "Perinci::Sub::Gen::Undoable" => "0.08",
+    "Rinci" => "v1.1.0",
+    "Setup" => "v1.0.0",
     "perl" => "5.010000"
   },
   "script_files" => []

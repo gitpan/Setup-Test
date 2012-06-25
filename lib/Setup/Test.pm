@@ -5,31 +5,15 @@ use strict;
 use warnings;
 use Log::Any '$log';
 
-use Perinci::Sub::Gen::Undoable 0.06 qw(gen_undoable_func);
+use Perinci::Sub::Gen::Undoable 0.07 qw(gen_undoable_func);
 
 require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(setup_text_case);
 
-our $VERSION = '0.08'; # VERSION
+our $VERSION = '0.09'; # VERSION
 
 our %SPEC;
-
-# return undef if text in $tr is already in correct case, or return the text in
-# correct case.
-my $_test = sub {
-    my ($tr, $case) = @_;
-    my $correct;
-    if ($case eq 'upper') {
-        $correct = uc($$tr);
-    } elsif ($case eq 'lower') {
-        $correct = lc($$tr);
-    } elsif ($case eq 'title') {
-        ($correct = $$tr) =~ s/\b(\w)(\w*)\b/uc($1).lc($2)/eg;
-    }
-    return if $$tr eq $correct;
-    $correct;
-};
 
 my $res = gen_undoable_func(
     name     => __PACKAGE__ . '::setup_text_case',
@@ -57,7 +41,7 @@ _
         },
     },
 
-    hook_check_args => sub {
+    check_args => sub {
         my $args = shift;
         defined($args->{text_ref}) or return [400, "Please specify text_ref"];
         ref($args->{text_ref}) eq 'SCALAR'
@@ -70,48 +54,42 @@ _
 
     build_steps => sub {
         my $args = shift;
-
-        my $tr    = $args->{text_ref};
-        my $case  = $args->{case};
-
-        my @steps;
-
-        my $res = $_test->($tr, $case);
-        push @steps, [case => $case] if defined($res);
-
-        [200, "OK", \@steps];
+        [200, "OK", [[case => $args->{case}]]];
     },
 
     steps => {
         case => {
             summary => 'Change text case',
-            gen_undo => sub {
-                my ($args, $step) = @_;
-
-                my $tr  = $args->{text_ref};
-                my $res = $_test->($tr, $step->[1]);
-                return ["set", $$tr] if defined($res);
-                return;
-            },
-            run => sub {
-                my ($args, $step, $undo) = @_;
-
-                my $tr  = $args->{text_ref};
-                my $res = $_test->($tr, $step->[1]);
-                $$tr = $res if defined($res);
-                [200, "OK"];
+            check_or_fix => sub {
+                my ($which, $args, $step, $undo) = @_;
+                my $tr   = $args->{text_ref};
+                my $case = $args->{case};
+                my $correct;
+                if ($case eq 'upper') {
+                    $correct = uc($$tr);
+                } elsif ($case eq 'lower') {
+                    $correct = lc($$tr);
+                } elsif ($case eq 'title') {
+                    ($correct = $$tr) =~ s/\b(\w)(\w*)\b/uc($1).lc($2)/eg;
+                }
+                if ($which eq 'check') {
+                    return if $$tr eq $correct;
+                    return ["set", $$tr];
+                } else { # fix
+                    $$tr = $correct;
+                    [200, "OK"];
+                }
             },
         },
 
         set => {
             summary => 'Set (restore) text value',
-            gen_undo => sub {
+            check => sub {
                 my ($args, $step) = @_;
                 ["case", $args->{case}];
             },
-            run => sub {
+            fix => sub {
                 my ($args, $step, $undo) = @_;
-
                 my $tr = $args->{text_ref};
                 $$tr = $step->[1];
                 [200, "OK"];
@@ -136,7 +114,7 @@ Setup::Test - Various simple setup routines for testing
 
 =head1 VERSION
 
-version 0.08
+version 0.09
 
 =head1 SYNOPSIS
 
