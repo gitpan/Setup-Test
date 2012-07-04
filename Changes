@@ -1,5 +1,10 @@
 Revision history for Setup-Test
 
+0.10    2012-07-04 (SHARYANTO)
+
+        No functional changes. Adjust to Perinci::Sub::Gen::Undoable 0.09.
+
+
 0.09    2012-06-23 (SHARYANTO)
 
         No functional changes. Adjust to Perinci::Sub::Gen::Undoable 0.08.

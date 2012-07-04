@@ -2,7 +2,7 @@ NAME
     Setup::Test - Various simple setup routines for testing
 
 VERSION
-    version 0.09
+    version 0.10
 
 SYNOPSIS
      use Setup::Unix::Group 'setup_text_case';

@@ -5,13 +5,13 @@ use strict;
 use warnings;
 use Log::Any '$log';
 
-use Perinci::Sub::Gen::Undoable 0.07 qw(gen_undoable_func);
+use Perinci::Sub::Gen::Undoable 0.09 qw(gen_undoable_func);
 
 require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(setup_text_case);
 
-our $VERSION = '0.09'; # VERSION
+our $VERSION = '0.10'; # VERSION
 
 our %SPEC;
 
@@ -73,8 +73,8 @@ _
                     ($correct = $$tr) =~ s/\b(\w)(\w*)\b/uc($1).lc($2)/eg;
                 }
                 if ($which eq 'check') {
-                    return if $$tr eq $correct;
-                    return ["set", $$tr];
+                    return [200, "OK"] if $$tr eq $correct;
+                    return [200, "OK", ["set", $$tr]];
                 } else { # fix
                     $$tr = $correct;
                     [200, "OK"];
@@ -86,7 +86,7 @@ _
             summary => 'Set (restore) text value',
             check => sub {
                 my ($args, $step) = @_;
-                ["case", $args->{case}];
+                [200, "OK", ["case", $args->{case}]];
             },
             fix => sub {
                 my ($args, $step, $undo) = @_;
@@ -114,7 +114,7 @@ Setup::Test - Various simple setup routines for testing
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 SYNOPSIS
 
